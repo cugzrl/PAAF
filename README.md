@@ -1,30 +1,36 @@
-# PAAF
+# 🚘 PAAF
 
-PAAF is a camera-LiDAR 3D object detector for infrastructure-side perception. It is built on [OpenPCDet](https://github.com/open-mmlab/OpenPCDet) and Voxel R-CNN. A sparse 3D encoder-decoder processes LiDAR voxels.
+PAAF is a camera-LiDAR 3D object detector for infrastructure-side perception. It is built on [OpenPCDet](https://github.com/open-mmlab/OpenPCDet).
 
 The released training setting is the infrastructure split of [DAIR-V2X](https://github.com/AIR-THU/DAIR-V2X), stored in KITTI layout, with classes `Car`, `Pedestrian`, and `Cyclist`.
 
-## Overview
+## 🔭 Overview
 
 The detector fuses multi-scale LiDAR voxels and image features with three modules: projection-guided interaction (PIA), projection-guided local aggregation (PLA), and adaptive modality fusion (AMF).
 
 <p align="center">
-  <img src="docs/figures/framework.png" alt="Overall framework of PAAF" width="100%">
+  <img src="docs/figures/framework.png" alt="Overall framework of PAAF" width="90%">
 </p>
 
-PLA samples a local image neighborhood around each projected voxel and aggregates it with learned offsets and attention weights. AMF then gates the aligned image feature into the LiDAR feature.
+PLA samples a local image neighborhood around each voxel and aggregates it with learned offsets and attention weights. AMF then gates the aligned image feature into the LiDAR feature.
 
 <p align="center">
-  <img src="docs/figures/method_detail.png" alt="Projection-guided local aggregation and adaptive modality fusion" width="100%">
+  <img src="docs/figures/method_detail.png" alt="Projection-guided local aggregation and adaptive modality fusion" width="90%">
 </p>
 
 Qualitative comparison on the bird's-eye view. Black boxes are ground truth and yellow boxes are predictions.
 
 <p align="center">
-  <img src="docs/figures/bev_visualization.png" alt="BEV detection visualization" width="100%">
+  <img src="docs/figures/bev_visualization.png" alt="BEV detection visualization" width="90%">
 </p>
 
-## Method
+Qualitative results on RCooper. Green notes mark objects found by PAAF that are missing from the annotation.
+
+<p align="center">
+  <img src="docs/figures/RCooper.png" alt="RCooper qualitative comparison" width="90%">
+</p>
+
+## 🧩 Method
 
 | Module | Implementation |
 | --- | --- |
@@ -34,7 +40,7 @@ Qualitative comparison on the bird's-eye view. Black boxes are ground truth and 
 | Image tower | frozen ResNet-50 + FPN |
 | Config | `tools/cfgs/dair/paaf.yaml` |
 
-## Installation
+## 🛠️ Installation
 
 Tested with Python 3.8, PyTorch 2.0.1, CUDA 11.7, spconv 2.3.6, and mmcv-full 1.7.1. The versions in `requirements.txt` match that environment.
 
@@ -59,7 +65,7 @@ mkdir -p checkpoints
 wget -P checkpoints https://download.pytorch.org/models/resnet50-19c8e357.pth
 ```
 
-## Data Preparation
+## 📦 Data Preparation
 
 ### 1. Download DAIR-V2X
 
@@ -112,7 +118,7 @@ An optional third argument overrides the data directory. The default is `data/da
 
 Image GT-sampling reads the 2D boxes stored in these info files and pastes the corresponding image crops during training.
 
-## Training
+## 🚀 Training
 
 All commands below are run from `tools/`, so the relative dataset path and ResNet weight path in the config resolve correctly.
 
@@ -143,7 +149,7 @@ python -m torch.distributed.launch --nproc_per_node=4 train.py \
 python train.py --cfg_file cfgs/dair/paaf.yaml --set OPTIMIZATION.NUM_EPOCHS 30
 ```
 
-## Evaluation
+## 📈 Evaluation
 
 ```bash
 cd tools
@@ -155,11 +161,11 @@ python test.py \
 
 The metric is the KITTI AP protocol on the validation split (`ImageSets/val.txt`), reported at the standard difficulties for `Car`, `Pedestrian`, and `Cyclist`. Add `--save_to_file` to write the prediction txt files under the experiment directory.
 
-## Acknowledgements
+## 🙏 Acknowledgements
 
 This repository is built on [OpenPCDet](https://github.com/open-mmlab/OpenPCDet) and uses [spconv](https://github.com/traveller59/spconv), [MMCV](https://github.com/open-mmlab/mmcv), and the [DAIR-V2X](https://github.com/AIR-THU/DAIR-V2X) dataset. Please also cite those projects when you use this code.
 
-## Citation
+## 📝 Citation
 
 ```bibtex
 @misc{paaf2026,
@@ -169,6 +175,6 @@ This repository is built on [OpenPCDet](https://github.com/open-mmlab/OpenPCDet)
 }
 ```
 
-## License
+## 📄 License
 
 The codebase is released under the Apache License 2.0. See [LICENSE](LICENSE). It includes code from OpenPCDet, which is also Apache 2.0.
