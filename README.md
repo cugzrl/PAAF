@@ -1,8 +1,28 @@
 # PAAF
 
-PAAF is a camera-LiDAR 3D object detector for infrastructure-side perception. It is built on [OpenPCDet](https://github.com/open-mmlab/OpenPCDet) and Voxel R-CNN. A sparse 3D encoder-decoder processes LiDAR voxels. At each scale, voxels are projected onto the image with the calibration, a deformable sampler reads nearby image features, and an adaptive gate writes that evidence back into the LiDAR feature. Voxels outside the camera field of view keep the LiDAR feature only. Detection uses an anchor head and a Voxel R-CNN refinement head.
+PAAF is a camera-LiDAR 3D object detector for infrastructure-side perception. It is built on [OpenPCDet](https://github.com/open-mmlab/OpenPCDet) and Voxel R-CNN. A sparse 3D encoder-decoder processes LiDAR voxels.
 
 The released training setting is the infrastructure split of [DAIR-V2X](https://github.com/AIR-THU/DAIR-V2X), stored in KITTI layout, with classes `Car`, `Pedestrian`, and `Cyclist`.
+
+## Overview
+
+The detector fuses multi-scale LiDAR voxels and image features with three modules: projection-guided interaction (PIA), projection-guided local aggregation (PLA), and adaptive modality fusion (AMF).
+
+<p align="center">
+  <img src="docs/figures/framework.png" alt="Overall framework of PAAF" width="100%">
+</p>
+
+PLA samples a local image neighborhood around each projected voxel and aggregates it with learned offsets and attention weights. AMF then gates the aligned image feature into the LiDAR feature.
+
+<p align="center">
+  <img src="docs/figures/method_detail.png" alt="Projection-guided local aggregation and adaptive modality fusion" width="100%">
+</p>
+
+Qualitative comparison on the bird's-eye view. Black boxes are ground truth and yellow boxes are predictions.
+
+<p align="center">
+  <img src="docs/figures/bev_visualization.png" alt="BEV detection visualization" width="100%">
+</p>
 
 ## Method
 
@@ -13,8 +33,6 @@ The released training setting is the infrastructure split of [DAIR-V2X](https://
 | Detector | `pcdet/models/detectors/voxel_rcnn_multi_modal.py` |
 | Image tower | frozen ResNet-50 + FPN |
 | Config | `tools/cfgs/dair/paaf.yaml` |
-
-`PAAF` runs once per encoder and decoder scale. It undoes the LiDAR geometric augmentation before projection, samples a hard-aligned image feature, predicts local offsets around that point, and blends the image feature with a learned gate.
 
 ## Installation
 
@@ -75,9 +93,7 @@ data/dair-kitti
     └── velodyne
 ```
 
-Each `calib/*.txt` file must contain KITTI keys `P2`, `R0_rect`, and `Tr_velo_to_cam`. Each `label_2/*.txt` line follows the KITTI object format. Sample ids in `ImageSets` match the file stems, for example `000000`.
-
-The detector keeps points inside the camera field of view. The point-cloud range is `[10, -32, -4, 194, 32, 4]` meters and the voxel size is `0.1 m`.
+Each `calib/*.txt` file must contain KITTI keys `P2`, `R0_rect`, and `Tr_velo_to_cam`. Each `label_2/*.txt` line follows the KITTI object format. Sample ids in `ImageSets` match the file stems, for example `000000`. The detector keeps points inside the camera field of view.
 
 ### 3. Generate info files and the GT database
 
