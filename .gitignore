@@ -1,0 +1,14 @@
+data/
+output/
+checkpoints/*.pth
+checkpoints/*.pth.*
+build/
+dist/
+*.egg-info/
+*.egg
+*.so
+*.pyc
+__pycache__/
+.idea/
+.vscode/
+*.log
