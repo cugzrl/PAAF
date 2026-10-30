@@ -35,14 +35,13 @@ Qualitative results on RCooper. Green notes mark objects found by PAAF that are 
 | Module | Implementation |
 | --- | --- |
 | Fusion | `pcdet/models/backbones_2d/fuser/paaf.py` |
-| Sparse backbone | `pcdet/models/backbones_3d/paaf_backbone.py` |
 | Detector | `pcdet/models/detectors/voxel_rcnn_multi_modal.py` |
 | Image tower | frozen ResNet-50 + FPN |
 | Config | `tools/cfgs/dair/paaf.yaml` |
 
 ## 🛠️ Installation
 
-Tested with Python 3.8, PyTorch 2.0.1, CUDA 11.7, spconv 2.3.6, and mmcv-full 1.7.1. The versions in `requirements.txt` match that environment.
+Tested with Python 3.8, PyTorch 2.0.1, CUDA 11.7, spconv 2.3.6, and mmcv-full 1.7.1. The versions in `requirements.txt` match that environment. See `docs/` for additional setup notes and dataset layout details.
 
 ```bash
 conda create -n paaf python=3.8 -y
